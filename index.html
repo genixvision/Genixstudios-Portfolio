@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genix Studios | Professional Photo Editing, Video Production & Graphic Design Services</title>
+    <meta name="description" content="Premium creative agency specializing in photo editing, video production, motion graphics, logo design, real estate photography, and brand identity. Print-ready quality guaranteed.">
+    <meta name="keywords" content="photo editing services, video editing, motion graphics, logo design, real estate photography, brand identity, graphic design, NFT art, product photography, professional photography">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <style>
+        :root {
+            --black: #050505;
+            --black-light: #0a0a0a;
+            --black-lighter: #111111;
+            --gold: #D4AF37;
+            --gold-light: #F4D03F;
+            --gold-dark: #B8860B;
+            --white: #FFFFFF;
+            --white-muted: #A0A0A0;
+            --white-dark: #666666;
+            --transition: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            cursor: none;
+            line-height: 1.6;
+        }
+
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s var(--transition), background 0.2s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-follower {
+            width: 40px;
+            height: 40px;
+            background: rgba(212, 175, 55, 0.1);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9998;
+            transition: transform 0.3s var(--transition);
+        }
+
+        .cursor.hover {
+            transform: scale(2);
+            background: var(--gold);
+        }
+
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9990;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            transition: all 0.3s var(--transition);
+        }
+
+        nav.scrolled {
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1.5rem 5%;
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--white-muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            position: relative;
+            transition: color 0.3s;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.3s var(--transition);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 8rem 5% 4rem;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 50%, rgba(212, 175, 55, 0.08) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 80%, rgba(212, 175, 55, 0.05) 0%, transparent 40%);
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            max-width: 1400px;
+            width: 100%;
+            z-index: 1;
+        }
+
+        .hero-text {
+            max-width: 600px;
+        }
+
+        .hero-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-label::before {
+            content: '';
+            width: 50px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .hero-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.05;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero-title .line {
+            display: block;
+            opacity: 0;
+            transform: translateY(100%);
+        }
+
+        .hero-title .gold {
+            color: var(--gold);
+            font-weight: 300;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--white-muted);
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.2rem 2.5rem;
+            background: var(--gold);
+            color: var(--black);
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .hero-cta:hover {
+            background: var(--white);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+        }
+
+        .hero-visual {
+            position: relative;
+            height: 500px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            overflow: hidden;
+        }
+
+        .hero-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(30%) contrast(1.1);
+            transition: all 0.5s var(--transition);
+        }
+
+        .hero-visual:hover img {
+            filter: grayscale(0%) contrast(1);
+            transform: scale(1.05);
+        }
+
+        .hero-visual::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .services {
+            padding: 10rem 5%;
+            background: var(--black-light);
+            position: relative;
+        }
+
+        .section-header {
+            margin-bottom: 5rem;
+            text-align: center;
+        }
+
+        .section-label {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .section-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            color: var(--white);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .service-card {
+            background: var(--black-lighter);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s var(--transition);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-image {
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .service-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(60%) contrast(1.1);
+            transition: all 0.5s var(--transition);
+        }
+
+        .service-card:hover .service-image img {
+            filter: grayscale(0%) contrast(1);
+            transform: scale(1.1);
+        }
+
+        .service-content {
+            padding: 2rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.75rem;
+            color: var(--gold);
+            margin-bottom: 1rem;
+            opacity: 0.6;
+            letter-spacing: 0.2em;
+        }
+
+        .service-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            letter-spacing: -0.01em;
+            color: var(--white);
+        }
+
+        .service-description {
+            color: var(--white-muted);
+            line-height: 1.6;
+            font-size: 0.9375rem;
+            flex: 1;
+        }
+
+        .service-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            color: var(--gold);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            transition: gap 0.3s;
+        }
+
+        .service-card:hover .service-link {
+            gap: 1rem;
+        }
+
+        .portfolio {
+            padding: 10rem 5%;
+            position: relative;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.5rem;
+            max-width: 1400px;
+            margin: 5rem auto 0;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            background: var(--black-lighter);
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+            min-height: 350px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            transition: all 0.4s var(--transition);
+        }
+
+        .portfolio-item:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: translateY(-5px);
+        }
+
+        .portfolio-item.large { grid-column: span 7; grid-row: span 2; min-height: 720px; }
+        .portfolio-item.medium { grid-column: span 5; min-height: 350px; }
+        .portfolio-item.wide { grid-column: span 6; min-height: 400px; }
+
+        .portfolio-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .portfolio-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(50%) contrast(1.1);
+            transition: all 0.6s var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-image img {
+            filter: grayscale(0%) contrast(1);
+            transform: scale(1.08);
+        }
+
+        .portfolio-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 3rem;
+            background: linear-gradient(to top, rgba(5, 5, 5, 0.95) 0%, rgba(5, 5, 5, 0.7) 50%, transparent 100%);
+            transform: translateY(20px);
+            opacity: 0.9;
+            transition: all 0.4s var(--transition);
+        }
+
+        .portfolio-item:hover .portfolio-overlay {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .portfolio-category {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .portfolio-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--white);
+            letter-spacing: -0.01em;
+        }
+
+        .portfolio-desc {
+            font-size: 0.9375rem;
+            color: var(--white-muted);
+            line-height: 1.5;
+        }
+
+        .about {
+            padding: 10rem 5%;
+            background: var(--black-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6rem;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .about-text {
+            position: relative;
+            z-index: 1;
+        }
+
+        .about-description {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--white-muted);
+            margin-bottom: 3rem;
+        }
+
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .stat-item {
+            border-left: 2px solid var(--gold);
+            padding-left: 1.5rem;
+        }
+
+        .stat-number {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--white-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .about-visual {
+            position: relative;
+            height: 600px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            overflow: hidden;
+        }
+
+        .about-visual img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(40%);
+            transition: all 0.5s;
+        }
+
+        .about-visual:hover img {
+            filter: grayscale(0%);
+        }
+
+        .contact {
+            padding: 10rem 5%;
+            position: relative;
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+            color: var(--white);
+        }
+
+        .contact-description {
+            font-size: 1.25rem;
+            color: var(--white-muted);
+            margin-bottom: 3rem;
+            line-height: 1.6;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .contact-link {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.5rem;
+            color: var(--white);
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            transition: color 0.3s;
+            font-weight: 600;
+        }
+
+        .contact-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s var(--transition);
+        }
+
+        .contact-link:hover {
+            color: var(--gold);
+        }
+
+        .contact-link:hover::after {
+            width: 100%;
+        }
+
+        .contact-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .contact-btn {
+            padding: 1rem 2rem;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            text-decoration: none;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            transition: all 0.3s;
+            background: transparent;
+        }
+
+        .contact-btn:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 4rem;
+            justify-content: center;
+        }
+
+        .social-link {
+            width: 55px;
+            height: 55px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .social-link:hover {
+            background: var(--gold);
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .social-link svg {
+            width: 22px;
+            height: 22px;
+            fill: var(--white);
+            transition: fill 0.3s;
+        }
+
+        .social-link:hover svg {
+            fill: var(--black);
+        }
+
+        footer {
+            padding: 3rem 5%;
+            border-top: 1px solid rgba(212, 175, 55, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.875rem;
+            color: var(--white-muted);
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            color: var(--white);
+            font-size: 1.2rem;
+        }
+
+        .footer-logo span {
+            color: var(--gold);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            cursor: pointer;
+            z-index: 101;
+        }
+
+        .mobile-menu-btn span {
+            width: 30px;
+            height: 2px;
+            background: var(--white);
+            transition: all 0.3s;
+        }
+
+        @media (max-width: 968px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-label {
+                justify-content: center;
+            }
+
+            .hero-label::before {
+                display: none;
+            }
+
+            .hero-visual {
+                height: 350px;
+                order: -1;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+
+            .about-visual {
+                height: 400px;
+            }
+
+            .portfolio-item.large,
+            .portfolio-item.medium,
+            .portfolio-item.wide {
+                grid-column: span 12;
+                min-height: 300px;
+            }
+
+            .portfolio-item.large {
+                min-height: 400px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .contact-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .contact-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: flex;
+            }
+
+            .cursor, .cursor-follower {
+                display: none;
+            }
+
+            body {
+                cursor: auto;
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s var(--transition);
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
+    <div class="noise"></div>
+
+    <nav id="navbar">
+        <a href="#" class="logo">GENIX<span>.</span>STUDIOS</a>
+        <ul class="nav-links">
+            <li><a href="#services">Services</a></li>
+            <li><a href="#portfolio">Portfolio</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <div class="mobile-menu-btn">
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <p class="hero-label">Premium Creative Agency</p>
+                <h1 class="hero-title">
+                    <span class="line">Professional</span>
+                    <span class="line"><span class="gold">Photo Editing</span></span>
+                    <span class="line">& Video Production</span>
+                </h1>
+                <p class="hero-description">
+                    Transform your visual content with Genix Studios. We specialize in high-end photo retouching, 
+                    cinematic video editing, motion graphics, and brand identity design. Print-ready quality delivered.
+                </p>
+                <a href="https://sites.google.com/view/jawadgenix/home" target="_blank" class="hero-cta">Explore Our Work</a>
+            </div>
+            <div class="hero-visual">
+                <img src="https://images.unsplash.com/photo-1542744094-3a31f272c490?w=800&q=80" alt="Professional Photo Editing Studio - High-End Retouching Services">
+            </div>
+        </div>
+    </section>
+
+    <section class="services" id="services">
+        <div class="section-header reveal">
+            <span class="section-label">Our Expertise</span>
+            <h2 class="section-title">Professional Creative<br>Services</h2>
+        </div>
+        <div class="services-grid">
+            <a href="https://sites.google.com/view/jawadgenix/print-ready-quality?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80" alt="Print Ready Quality - Professional Graphic Design Services">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">01</span>
+                    <h3 class="service-title">Print Ready Quality</h3>
+                    <p class="service-description">High-resolution designs optimized for professional printing. Business cards, brochures, banners, and marketing materials with precision color accuracy.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/video-editing?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=600&q=80" alt="Video Editing Animation Motion Graphics Production">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">02</span>
+                    <h3 class="service-title">Video Editing & Motion Graphics</h3>
+                    <p class="service-description">Cinematic video production, explainer videos, logo animations, reels, and motion graphics that captivate your audience and elevate your brand.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/real-estate?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Real Estate Photography Professional Property Editing">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">03</span>
+                    <h3 class="service-title">Real Estate Photo Editing</h3>
+                    <p class="service-description">Luxury property photo enhancement, virtual staging, HDR blending, and sky replacement. Make every listing look premium and sell faster.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/professional-photography?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1554048612-b6a482bc67e5?w=600&q=80" alt="Professional Photography Services Studio">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">04</span>
+                    <h3 class="service-title">Professional Photography</h3>
+                    <p class="service-description">Expert photography services for products, portraits, and commercial projects. Studio-quality results with professional lighting and composition.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/photo-editing-and-manipulations?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&q=80" alt="Photo Editing and Manipulation Professional Retouching">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">05</span>
+                    <h3 class="service-title">Photo Editing & Manipulation</h3>
+                    <p class="service-description">Advanced retouching, color correction, background removal, and creative photo manipulation. Transform ordinary images into extraordinary visuals.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/product-photo?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80" alt="E-commerce Product Photography Professional">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">06</span>
+                    <h3 class="service-title">E-commerce & Product Images</h3>
+                    <p class="service-description">Amazon-ready product photos, white background shots, lifestyle imagery, and 360-degree views that boost conversion rates and sales.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/professional-designs?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1626785774625-0b1c2c4eab67?w=600&q=80" alt="Professional Graphic Design Brand Identity">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">07</span>
+                    <h3 class="service-title">Professional Designing</h3>
+                    <p class="service-description">Complete brand identity systems, marketing collateral, social media graphics, and custom illustrations tailored to your business needs.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/vector?authuser=0" target="_blank" class="service-card reveal">
+                <div class="service-image">
+                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&q=80" alt="Vector Graphics Design Illustration Services">
+                </div>
+                <div class="service-content">
+                    <span class="service-number">08</span>
+                    <h3 class="service-title">Vector Graphics</h3>
+                    <p class="service-description">Scalable vector illustrations, logo design, icon sets, and technical drawings. Perfect for print, web, and large-format applications.</p>
+                    <span class="service-link">View Portfolio →</span>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="portfolio" id="portfolio">
+        <div class="section-header reveal">
+            <span class="section-label">Featured Work</span>
+            <h2 class="section-title">Portfolio Showcase</h2>
+        </div>
+        <div class="portfolio-grid">
+            <a href="https://sites.google.com/view/jawadgenix/print-ready-quality?authuser=0" target="_blank" class="portfolio-item large reveal">
+                <div class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=1200&q=80" alt="Print Design Portfolio - Marketing Materials">
+                </div>
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">Print Design</span>
+                    <h3 class="portfolio-title">Premium Marketing Materials</h3>
+                    <p class="portfolio-desc">Business cards, brochures, flyers, and vehicle wraps with print-ready precision</p>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/video-editing?authuser=0" target="_blank" class="portfolio-item medium reveal">
+                <div class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&q=80" alt="Video Production Motion Graphics">
+                </div>
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">Video Production</span>
+                    <h3 class="portfolio-title">Motion Graphics</h3>
+                    <p class="portfolio-desc">Animated explainers and logo animations</p>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/real-estate?authuser=0" target="_blank" class="portfolio-item medium reveal">
+                <div class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Real Estate Photography Luxury Homes">
+                </div>
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">Real Estate</span>
+                    <h3 class="portfolio-title">Property Photography</h3>
+                    <p class="portfolio-desc">HDR enhancement and virtual staging</p>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/professional-designs?authuser=0" target="_blank" class="portfolio-item wide reveal">
+                <div class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=1000&q=80" alt="Brand Identity Design Corporate">
+                </div>
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">Brand Identity</span>
+                    <h3 class="portfolio-title">Corporate Branding Systems</h3>
+                    <p class="portfolio-desc">Complete visual identity and brand guidelines</p>
+                </div>
+            </a>
+
+            <a href="https://sites.google.com/view/jawadgenix/photo-editing-and-manipulations?authuser=0" target="_blank" class="portfolio-item wide reveal">
+                <div class="portfolio-image">
+                    <img src="https://images.unsplash.com/photo-1542038784456-1ea8e935640e?w=1000&q=80" alt="Photo Retouching Professional Editing">
+                </div>
+                <div class="portfolio-overlay">
+                    <span class="portfolio-category">Photo Editing</span>
+                    <h3 class="portfolio-title">Advanced Retouching</h3>
+                    <p class="portfolio-desc">High-end manipulation and restoration</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="about" id="about">
+        <div class="about-content">
+            <div class="about-text">
+                <span class="section-label reveal">About Us</span>
+                <h2 class="section-title reveal">Crafting Visual Excellence Since 2019</h2>
+                <p class="about-description reveal">
+                    Genix Studios is a premier creative agency dedicated to delivering exceptional visual content. 
+                    We combine artistic vision with technical precision to transform your ideas into stunning realities. 
+                    From photo editing to video production, our expertise ensures every project exceeds expectations 
+                    with print-ready quality and attention to detail.
+                </p>
+                <div class="about-stats">
+                    <div class="stat-item reveal">
+                        <div class="stat-number">500+</div>
+                        <div class="stat-label">Projects Delivered</div>
+                    </div>
+                    <div class="stat-item reveal">
+                        <div class="stat-number">150+</div>
+                        <div class="stat-label">Global Clients</div>
+                    </div>
+                    <div class="stat-item reveal">
+                        <div class="stat-number">5+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                </div>
+            </div>
+            <div class="about-visual reveal">
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80" alt="Creative Studio Workspace Professional">
+            </div>
+        </div>
+    </section>
+
+    <section class="contact" id="contact">
+        <div class="contact-content">
+            <span class="section-label reveal">Get In Touch</span>
+            <h2 class="contact-title reveal">Ready to Elevate Your Brand?</h2>
+            <p class="contact-description reveal">
+                Contact us today for premium photo editing, video production, and graphic design services. 
+                Let's create something extraordinary together.
+            </p>
+            <div class="contact-links">
+                <a href="mailto:jawadgenix@gmail.com" class="contact-link reveal">jawadgenix@gmail.com</a>
+            </div>
+            <div class="contact-buttons reveal">
+                <a href="https://sites.google.com/view/jawadgenix/home" target="_blank" class="contact-btn">View Full Portfolio</a>
+                <a href="https://drive.google.com/drive/folders/1Gl9Abtwh42jdqeEPy-AL_OFK6aopqnI6" target="_blank" class="contact-btn">Download Portfolio</a>
+            </div>
+            <div class="social-links">
+                <a href="https://linkedin.com/in/genixstudios" target="_blank" class="social-link reveal" aria-label="LinkedIn">
+                    <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2zM4 6a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>
+                </a>
+                <a href="#" class="social-link reveal" aria-label="Instagram">
+                    <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                </a>
+                <a href="#" class="social-link reveal" aria-label="Behance">
+                    <svg viewBox="0 0 24 24"><path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14h-8.027c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988h-6.466v-14.967h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zm-3.466-8.988h3.584c2.508 0 2.906-3-.312-3h-3.272v3zm3.391 3h-3.391v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-logo">GENIX<span>.</span>STUDIOS</div>
+        <div>© 2025 All Rights Reserved | Professional Creative Services</div>
+    </footer>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Custom Cursor
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        let mouseX = 0, mouseY = 0;
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+        });
+
+        function animateCursor() {
+            cursorX += (mouseX - cursorX) * 0.2;
+            cursorY += (mouseY - cursorY) * 0.2;
+            followerX += (mouseX - followerX) * 0.1;
+            followerY += (mouseY - followerY) * 0.1;
+
+            cursor.style.left = cursorX - 10 + 'px';
+            cursor.style.top = cursorY - 10 + 'px';
+            follower.style.left = followerX - 20 + 'px';
+            follower.style.top = followerY - 20 + 'px';
+
+            requestAnimationFrame(animateCursor);
+        }
+        animateCursor();
+
+        const hoverElements = document.querySelectorAll('a, button, .service-card, .portfolio-item');
+        hoverElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+
+        // Hero Animations
+        const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+        
+        heroTl
+            .to('.hero-label', { opacity: 1, y: 0, duration: 0.8, delay: 0.2 })
+            .to('.hero-title .line', { 
+                opacity: 1, 
+                y: 0, 
+                duration: 1, 
+                stagger: 0.15 
+            }, '-=0.4')
+            .to('.hero-description', { opacity: 1, y: 0, duration: 0.8 }, '-=0.6')
+            .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8 }, '-=0.4')
+            .from('.hero-visual', { opacity: 0, x: 50, duration: 1 }, '-=0.8');
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach((element, index) => {
+            gsap.fromTo(element, 
+                { opacity: 0, y: 40 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: 'power3.out',
+                    scrollTrigger: {
+                        trigger: element,
+                        start: 'top 85%',
+                        toggleActions: 'play none none none'
+                    },
+                    delay: index % 3 * 0.1
+                }
+            );
+        });
+
+        // Parallax
+        gsap.to('.hero-bg', {
+            scrollTrigger: {
+                trigger: '.hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            },
+            y: 200,
+            opacity: 0
+        });
+
+        // Service Cards Stagger
+        gsap.from('.service-card', {
+            scrollTrigger: {
+                trigger: '.services-grid',
+                start: 'top 80%'
+            },
+            opacity: 0,
+            y: 60,
+            duration: 0.8,
+            stagger: 0.1,
+            ease: 'power3.out'
+        });
+
+        // Portfolio Items
+        gsap.from('.portfolio-item', {
+            scrollTrigger: {
+                trigger: '.portfolio-grid',
+                start: 'top 80%'
+            },
+            opacity: 0,
+            scale: 0.95,
+            duration: 0.8,
+            stagger: 0.15,
+            ease: 'power3.out'
+        });
+
+        // Stats Counter
+        const stats = document.querySelectorAll('.stat-number');
+        stats.forEach(stat => {
+            gsap.from(stat, {
+                scrollTrigger: {
+                    trigger: stat,
+                    start: 'top 85%'
+                },
+                textContent: 0,
+                duration: 2,
+                ease: 'power1.out',
+                snap: { textContent: 1 },
+                onUpdate: function() {
+                    stat.textContent = Math.ceil(this.targets()[0].textContent) + '+';
+                }
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Navigation Scroll Effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Magnetic Buttons
+        const buttons = document.querySelectorAll('.hero-cta, .contact-btn, .social-link');
+        buttons.forEach(btn => {
+            btn.addEventListener('mousemove', (e) => {
+                const rect = btn.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(btn, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, {
+                    x: 0,
+                    y: 0,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
